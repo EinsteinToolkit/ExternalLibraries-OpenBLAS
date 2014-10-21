@@ -179,7 +179,7 @@ if [ "${OPENBLAS_DIR}" != '/usr' -a             \
      "${OPENBLAS_DIR}" != '/usr/local' -a       \
      "${OPENBLAS_DIR}" != 'NO_BUILD' ]
 then
-    : ${OPENBLAS_INC_DIRS=}
+    : ${OPENBLAS_INC_DIRS="${OPENBLAS_DIR}/include"}
     : ${OPENBLAS_LIB_DIRS="${OPENBLAS_DIR}/lib"}
 fi
 : ${OPENBLAS_LIBS='openblas'}
