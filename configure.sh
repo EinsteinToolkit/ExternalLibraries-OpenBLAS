@@ -84,7 +84,7 @@ then
     THORN=OpenBLAS
     NAME=OpenBLAS-0.2.12
     TARNAME=v0.2.12
-    SRCDIR=$(dirname $0)
+    SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${OPENBLAS_INSTALL_DIR}" ]; then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
@@ -175,18 +175,17 @@ fi
 ################################################################################
 
 # Set options
-if [ "${OPENBLAS_DIR}" != '/usr' -a             \
-     "${OPENBLAS_DIR}" != '/usr/local' -a       \
-     "${OPENBLAS_DIR}" != 'NO_BUILD' ]
-then
+if [ "${OPENBLAS_DIR}" != 'NO_BUILD' ]; then
     : ${OPENBLAS_INC_DIRS="${OPENBLAS_DIR}/include"}
     : ${OPENBLAS_LIB_DIRS="${OPENBLAS_DIR}/lib"}
 fi
 : ${OPENBLAS_LIBS='openblas'}
 
+OPENBLAS_INC_DIRS="$(${CCTK_HOME}/lib/sbin/strip-incdirs.sh ${OPENBLAS_INC_DIRS})"
+OPENBLAS_LIB_DIRS="$(${CCTK_HOME}/lib/sbin/strip-libdirs.sh ${OPENBLAS_LIB_DIRS})"
+
 # Pass options to Cactus
 echo "BEGIN MAKE_DEFINITION"
-echo "HAVE_OPENBLAS     = 1"
 echo "OPENBLAS_DIR      = ${OPENBLAS_DIR}"
 echo "OPENBLAS_INC_DIRS = ${OPENBLAS_INC_DIRS}"
 echo "OPENBLAS_LIB_DIRS = ${OPENBLAS_LIB_DIRS}"
