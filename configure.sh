@@ -137,7 +137,7 @@ then
         # no configuration necessary
         
         echo "OpenBLAS: Building..."
-        ${MAKE} libs netlib shared CC="$CC" FC="$F90" CFLAGS="$CFLAGS" FFLAGS="$F90FLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS"
+        ${MAKE} libs netlib shared MAKE="$MAKE" CC="$CC" FC="$F90" CFLAGS="$CFLAGS" FFLAGS="$F90FLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS"
         
         echo "OpenBLAS: Installing..."
         if [ "$(uname)" = "Darwin" ]; then
@@ -149,7 +149,7 @@ then
             chmod a+x $bindir/install
             export PATH="$bindir:$PATH"
         fi
-        ${MAKE} install PREFIX="${INSTALL_DIR}"
+        ${MAKE} install MAKE="$MAKE" PREFIX="${INSTALL_DIR}"
         popd
         
         echo "OpenBLAS: Cleaning up..."
