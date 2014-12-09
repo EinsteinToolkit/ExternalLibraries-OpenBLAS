@@ -63,27 +63,27 @@ then
     echo "Using bundled OpenBLAS..."
     echo "END MESSAGE"
     
-    # check for required tools. Do this here so that we don't require them when
-    # using the system library
-    if [ x$TAR = x ] ; then
-      echo 'BEGIN ERROR'
-      echo 'Could not find tar command. Please make sure that (gnu) tar is present'
-      echo 'and that the TAR variable is set to its location.'
-      echo 'END ERROR'
-      exit 1
+    # Check for required tools. Do this here so that we don't require
+    # them when using the system library.
+    if [ "x$TAR" = x ] ; then
+        echo 'BEGIN ERROR'
+        echo 'Could not find tar command.'
+        echo 'Please make sure that the (GNU) tar command is present,'
+        echo 'and that the TAR variable is set to its location.'
+        echo 'END ERROR'
+        exit 1
     fi
-    #if [ x$PATCH = x ] ; then
-    #  echo 'BEGIN ERROR'
-    #  echo 'Could not find patch command. Please make sure that (gnu) tar is present'
-    #  echo 'and that the PATCH variable is set to its location.'
-    #  echo 'END ERROR'
-    #  exit 1
-    #fi
+    if [ "x$PATCH" = x ] ; then
+        echo 'BEGIN ERROR'
+        echo 'Could not find patch command.'
+        echo 'Please make sure that the patch command is present,'
+        echo 'and that the PATCH variable is set to its location.'
+        echo 'END ERROR'
+        exit 1
+    fi
 
     # Set locations
     THORN=OpenBLAS
-    NAME=OpenBLAS-0.2.12
-    TARNAME=v0.2.12
     SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${OPENBLAS_INSTALL_DIR}" ]; then
@@ -94,78 +94,12 @@ then
         echo "END MESSAGE"
         INSTALL_DIR=${OPENBLAS_INSTALL_DIR}
     fi
-    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     OPENBLAS_DIR=${INSTALL_DIR}
-    
-    if [ -e ${DONE_FILE} -a ${DONE_FILE} -nt ${SRCDIR}/dist/${NAME}.tar.gz \
-                         -a ${DONE_FILE} -nt ${SRCDIR}/configure.sh ]
-    then
-        echo "BEGIN MESSAGE"
-        echo "OpenBLAS has already been built; doing nothing"
-        echo "END MESSAGE"
-    else
-        echo "BEGIN MESSAGE"
-        echo "Building OpenBLAS"
-        echo "END MESSAGE"
-        
-        # Build in a subshell
-        (
-        exec >&2                    # Redirect stdout to stderr
-        if [ "$(echo ${VERBOSE} | tr '[:upper:]' '[:lower:]')" = 'yes' ]; then
-            set -x                  # Output commands
-        fi
-        set -e                      # Abort on errors
-        cd ${SCRATCH_BUILD}
-        
-        # Set up environment
-        unset LIBS
-        if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
-            export OBJECT_MODE=64
-        fi
-        
-        echo "OpenBLAS: Preparing directory structure..."
-        mkdir build external done 2> /dev/null || true
-        rm -rf ${BUILD_DIR} ${INSTALL_DIR}
-        mkdir ${BUILD_DIR} ${INSTALL_DIR}
-        
-        echo "OpenBLAS: Unpacking archive..."
-        pushd ${BUILD_DIR}
-        ${TAR?} xzf ${SRCDIR}/dist/${TARNAME}.tar.gz
-        
-        echo "OpenBLAS: Configuring..."
-        cd ${NAME}
-        # no configuration necessary
-        
-        echo "OpenBLAS: Building..."
-        ${MAKE} libs netlib shared MAKE="$MAKE" CC="$CC" FC="$F90" CFLAGS="$CFLAGS" FFLAGS="$F90FLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS"
-        
-        echo "OpenBLAS: Installing..."
-        if [ "$(uname)" = "Darwin" ]; then
-            # Create a script "install" that can handle the "-D"
-            # option that OpenBLAS is using
-            bindir="${BUILD_DIR}/bin"
-            mkdir -p $bindir
-            echo "exec ginstall" '"$@"' >$bindir/install
-            chmod a+x $bindir/install
-            export PATH="$bindir:$PATH"
-        fi
-        ${MAKE} install MAKE="$MAKE" PREFIX="${INSTALL_DIR}"
-        popd
-        
-        echo "OpenBLAS: Cleaning up..."
-        rm -rf ${BUILD_DIR}
-        
-        date > ${DONE_FILE}
-        echo "OpenBLAS: Done."
-        )
-        if (( $? )); then
-            echo 'BEGIN ERROR'
-            echo 'Error while building OpenBLAS. Aborting.'
-            echo 'END ERROR'
-            exit 1
-        fi
-    fi
-    
+else
+    THORN=OpenBLAS
+    DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
+    mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
+    date > ${DONE_FILE}
 fi
 
 
@@ -173,6 +107,11 @@ fi
 ################################################################################
 # Configure Cactus
 ################################################################################
+
+# Pass configuration options to build script
+echo "BEGIN MAKE_DEFINITION"
+echo "OPENBLAS_INSTALL_DIR = ${OPENBLAS_INSTALL_DIR}"
+echo "END MAKE_DEFINITION"
 
 # Set options
 if [ "${OPENBLAS_DIR}" != 'NO_BUILD' ]; then
