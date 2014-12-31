@@ -1,6 +1,6 @@
 # Main make.code.deps file for thorn OpenBLAS
 
-export OPENBLAS_INSTALL_DIR
+export OPENBLAS_INT8 OPENBLAS_INSTALL_DIR
 
 $(CCTK_TARGET) $(OBJS) $(SRCS:%=%.d): $(SCRATCH_BUILD)/done/$(THORN)
 $(SCRATCH_BUILD)/done/$(THORN): $(SRCDIR)/build.sh

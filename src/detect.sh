@@ -53,6 +53,18 @@ set -e                          # Abort on errors
 
 
 ################################################################################
+# Configure
+################################################################################
+
+: ${OPENBLAS_INT8:=0}
+export OPENBLAS_INT8
+if [ "${OPENBLAS_INT8}" != 0 -a "${OPENBLAS_INT8}" != 1 ]; then
+    echo "BEGIN ERROR"
+    echo "OPENBLAS_INT8 must be either 0 or 1"
+    echo "END ERROR"
+fi
+
+################################################################################
 # Build
 ################################################################################
 
@@ -124,11 +136,15 @@ OPENBLAS_INC_DIRS="$(${CCTK_HOME}/lib/sbin/strip-incdirs.sh ${OPENBLAS_INC_DIRS}
 OPENBLAS_LIB_DIRS="$(${CCTK_HOME}/lib/sbin/strip-libdirs.sh ${OPENBLAS_LIB_DIRS})"
 
 # Pass options to Cactus
+echo "BEGIN DEFINE"
+echo "CCTK_BLAS_INT8 ${OPENBLAS_INT8}"
+echo "END DEFINE"
 echo "BEGIN MAKE_DEFINITION"
 echo "OPENBLAS_DIR      = ${OPENBLAS_DIR}"
 echo "OPENBLAS_INC_DIRS = ${OPENBLAS_INC_DIRS}"
 echo "OPENBLAS_LIB_DIRS = ${OPENBLAS_LIB_DIRS}"
 echo "OPENBLAS_LIBS     = ${OPENBLAS_LIBS}"
+echo "CCTK_BLAS_INT8    = ${OPENBLAS_INT8}"
 echo "BLAS_DIR          = ${OPENBLAS_DIR}"
 echo "BLAS_INC_DIRS     = ${OPENBLAS_INC_DIRS}"
 echo "BLAS_LIB_DIRS     = ${OPENBLAS_LIB_DIRS}"

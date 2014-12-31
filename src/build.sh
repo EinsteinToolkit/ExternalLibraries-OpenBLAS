@@ -49,7 +49,7 @@ cd ${NAME}
 # no configuration necessary
 
 echo "OpenBLAS: Building..."
-${MAKE} libs netlib shared MAKE="$MAKE" CC="$CC" FC="$F90" CFLAGS="$CFLAGS" FFLAGS="$F90FLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS"
+${MAKE} libs netlib shared MAKE="$MAKE" CC="$CC" FC="$F90" CFLAGS="$CFLAGS" FFLAGS="$F90FLAGS" LDFLAGS="$LDFLAGS" LIBS="$LIBS" INTERFACE64=${OPENBLAS_INT8}
 
 echo "OpenBLAS: Installing..."
 if [ "$(uname)" = "Darwin" ]; then
@@ -61,7 +61,25 @@ if [ "$(uname)" = "Darwin" ]; then
     chmod a+x $bindir/install
     export PATH="$bindir:$PATH"
 fi
-${MAKE} install MAKE="$MAKE" PREFIX="${INSTALL_DIR}"
+${MAKE} install MAKE="$MAKE" PREFIX="${INSTALL_DIR}" INTERFACE64=1
+{
+    cat <<EOT
+#ifndef LAPACK_ILP64
+#  define LAPACK_ILP64
+#endif
+EOT
+    cat ${INSTALL_DIR}/include/lapacke_config.h
+} > ${INSTALL_DIR}/include/lapacke_config.h.tmp
+mv -f ${INSTALL_DIR}/include/lapacke_config.h.tmp ${INSTALL_DIR}/include/lapacke_config.h
+{
+    cat <<EOT
+#ifndef HAVE_LAPACK_CONFIG_H
+#  define HAVE_LAPACK_CONFIG_H
+#endif
+EOT
+    cat ${INSTALL_DIR}/include/lapacke.h
+} > ${INSTALL_DIR}/include/lapacke.h.tmp
+mv -f ${INSTALL_DIR}/include/lapacke.h.tmp ${INSTALL_DIR}/include/lapacke.h
 popd
 
 echo "OpenBLAS: Cleaning up..."
