@@ -102,7 +102,7 @@ then
         INSTALL_DIR=${SCRATCH_BUILD}/external/${THORN}
     else
         echo "BEGIN MESSAGE"
-        echo "Installing OpenBLAS into ${OPENBLAS_INSTALL_DIR} "
+        echo "Installing OpenBLAS into ${OPENBLAS_INSTALL_DIR}"
         echo "END MESSAGE"
         INSTALL_DIR=${OPENBLAS_INSTALL_DIR}
     fi
@@ -110,8 +110,10 @@ then
 else
     THORN=OpenBLAS
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
-    mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
-    date > ${DONE_FILE}
+    if [ ! -e ${DONE_FILE} ]; then
+        mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
+        date > ${DONE_FILE}
+    fi
 fi
 
 
