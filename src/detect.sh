@@ -50,6 +50,8 @@ set -e                          # Abort on errors
 #     fi
 # fi
 
+THORN=OpenBLAS
+
 
 
 ################################################################################
@@ -95,7 +97,6 @@ then
     fi
 
     # Set locations
-    THORN=OpenBLAS
     SRCDIR="$(dirname $0)"
     BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
     if [ -z "${OPENBLAS_INSTALL_DIR}" ]; then
@@ -106,9 +107,10 @@ then
         echo "END MESSAGE"
         INSTALL_DIR=${OPENBLAS_INSTALL_DIR}
     fi
+    OPENBLAS_BUILD=1
     OPENBLAS_DIR=${INSTALL_DIR}
 else
-    THORN=OpenBLAS
+    OPENBLAS_BUILD=
     DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
     if [ ! -e ${DONE_FILE} ]; then
         mkdir ${SCRATCH_BUILD}/done 2> /dev/null || true
@@ -124,6 +126,7 @@ fi
 
 # Pass configuration options to build script
 echo "BEGIN MAKE_DEFINITION"
+echo "OPENBLAS_BUILD       = ${OPENBLAS_BUILD}"
 echo "OPENBLAS_INSTALL_DIR = ${OPENBLAS_INSTALL_DIR}"
 echo "END MAKE_DEFINITION"
 
