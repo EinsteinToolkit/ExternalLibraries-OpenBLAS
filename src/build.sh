@@ -33,6 +33,9 @@ unset LIBS
 if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
     export OBJECT_MODE=64
 fi
+# Keep only -j option in Makeflags but not Cactus' make variables (some confuse
+# OpenBLAS's c_check script)
+MAKEFLAGS=${MAKEFLAGS%% -- *}
 
 echo "OpenBLAS: Preparing directory structure..."
 cd ${SCRATCH_BUILD}
