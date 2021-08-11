@@ -29,7 +29,7 @@ fi
 DONE_FILE=${SCRATCH_BUILD}/done/${THORN}
 OPENBLAS_DIR=${INSTALL_DIR}
 
-unset LIBS
+unset LIBS LD
 if echo '' ${ARFLAGS} | grep 64 > /dev/null 2>&1; then
     export OBJECT_MODE=64
 fi
