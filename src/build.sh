@@ -14,8 +14,8 @@ set -e                          # Abort on errors
 
 # Set locations
 THORN=OpenBLAS
-NAME=OpenBLAS-0.3.9
-TARNAME=v0.3.9
+NAME=OpenBLAS-0.3.20
+TARNAME=v0.3.20
 SRCDIR="$(dirname $0)"
 BUILD_DIR=${SCRATCH_BUILD}/build/${THORN}
 if [ -z "${OPENBLAS_INSTALL_DIR}" ]; then
